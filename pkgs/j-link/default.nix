@@ -19,19 +19,19 @@
 
 let
   architectures = {
+    aarch64-linux = "arm64";
+    armv7l-linux  = "arm";
     i686-linux    = "i386";
     x86_64-linux  = "x86_64";
-    armv7l-linux  = "arm";
-    aarch64-linux = "arm64";
   };
 
   architecture = architectures.${stdenv.hostPlatform.system};
 
   hashes = {
-    i686-linux    = "sha256-yYEeDr0d4TfKcnQd4Ds3JlS0E5fjLDU4XBKw/sg2VTU=";
-    x86_64-linux  = "sha256-D+DCNyXtPlIXZH/KzQPPivz262LtubsUi6BNChr0Mi0=";
-    armv7l-linux  = "sha256-ns5LR6SyNd8ZRYuka3SglSeLxDZsFlb28QqJ1i/QDMY=";
-    aarch64-linux = "sha256-2WtIzAKN4X4VvD4CIOe7VrqTFybUMx+hz1n2qGf8Id8=";
+    aarch64-linux = "sha256-kEdtKyXfejmCYoV2Vo1aroUXaSeLloP5P1Lau5uQtAo=";
+    armv7l-linux  = "sha256-ep+mx0QnAQSYeFG0LtZszW4ouWqEIVfP6Jg+rwob4KI=";
+    i686-linux    = "sha256-WFueNuxPO69bXx769O6Dd4c4aISlIQk7cHPhGXHxWyo=";
+    x86_64-linux  = "sha256-4egyJE3APZBFlvv3s1ZvjSaicYVm0KiHNXVEhuSrj9o=";
   };
 
   hash = hashes.${stdenv.hostPlatform.system};
@@ -116,7 +116,7 @@ in
 
 stdenv.mkDerivation rec {
   pname = "j-link";
-  version = "V700a";
+  version = "V752b";
 
   src = requireFile {
     name = "JLink_Linux_${version}_${architecture}.tgz";
@@ -143,20 +143,34 @@ stdenv.mkDerivation rec {
 
   installPhase = ''
     runHook preInstall
-    mkdir -p $out/{JLink,bin}
-    cp -R * $out/JLink
-    ln -s $out/JLink/J* $out/bin/
 
-    # Fails because of https://github.com/NixOS/patchelf/issues/255, waiting for 0.13 or whatever.
-    rm -f $out/JLink/JLinkSTM32Exe
+    mkdir -p "$out/lib/JLink" "$out/share/doc" "$out/bin"
 
-    rm -r $out/bin/JLinkDevices.xml
-    install -D -t $out/lib/udev/rules.d 99-jlink.rules
+    cp -R * "$out/lib/JLink"
+    rm "$out/lib/JLink/99-jlink.rules"
+
+    for f in "$out/lib/JLink"/J*; do
+        if [[ -L $f ]]; then
+            mv "$f" "$out/bin/"
+        elif [[ -x $f ]]; then
+            ln -s "$f" "$out/bin/"
+        fi
+    done
+
+    mv "$out/lib/JLink/Doc" "$out/share/doc/JLink"
+    mv \
+        "$out/lib/JLink"/README* \
+        "$out/lib/JLink/Samples" \
+        "$out/lib/JLink/GDBServer"/Readme* \
+        "$out/share/doc/JLink/"
+
+    install -D -t "$out/lib/udev/rules.d" 99-jlink.rules
+
     runHook postInstall
   '';
 
   preFixup = ''
-    patchelf --add-needed libudev.so.1 $out/JLink/libjlinkarm.so
+    patchelf --add-needed libudev.so.1 $out/lib/JLink/libjlinkarm.so
   '';
 
   meta = with lib; {
