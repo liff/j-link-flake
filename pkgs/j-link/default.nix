@@ -2,6 +2,7 @@
 , lib
 , requireFile
 , autoPatchelfHook
+, makeWrapper
 , makeDesktopItem
 , copyDesktopItems
 , fontconfig
@@ -129,7 +130,7 @@ stdenv.mkDerivation rec {
   dontStrip = true;
   preferLocalBuild = true;
 
-  nativeBuildInputs = [ copyDesktopItems autoPatchelfHook ];
+  nativeBuildInputs = [ copyDesktopItems autoPatchelfHook makeWrapper ];
 
   buildInputs = [
     udev stdenv.cc.cc.lib
@@ -153,7 +154,7 @@ stdenv.mkDerivation rec {
         if [[ -L $f ]]; then
             mv "$f" "$out/bin/"
         elif [[ -x $f ]]; then
-            ln -s "$f" "$out/bin/"
+            makeWrapper "$f" "$out/bin/$(basename "$f")"
         fi
     done
 
