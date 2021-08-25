@@ -29,10 +29,10 @@ let
   architecture = architectures.${stdenv.hostPlatform.system};
 
   hashes = {
-    aarch64-linux = "sha256-kEdtKyXfejmCYoV2Vo1aroUXaSeLloP5P1Lau5uQtAo=";
-    armv7l-linux  = "sha256-ep+mx0QnAQSYeFG0LtZszW4ouWqEIVfP6Jg+rwob4KI=";
-    i686-linux    = "sha256-WFueNuxPO69bXx769O6Dd4c4aISlIQk7cHPhGXHxWyo=";
-    x86_64-linux  = "sha256-4egyJE3APZBFlvv3s1ZvjSaicYVm0KiHNXVEhuSrj9o=";
+    aarch64-linux = "sha256-qjLkC2j6lRYkhmvE/ZEp8jg+VMPQObtA6tTr6iL63KM=";
+    armv7l-linux  = "sha256-cuakzV3Vazn0ziUEbnJLxODcTOhL92lC7Zol/CvjRtY=";
+    i686-linux    = "sha256-p6RoleHkMzNhcFPHCQqf/vVSOWjXsGlyR6ly1qUAQ2M=";
+    x86_64-linux  = "sha256-tv3vdqbFUvFe7OTAZWa36N62CthX5M+9DEQcFyxVC+A=";
   };
 
   hash = hashes.${stdenv.hostPlatform.system};
@@ -117,7 +117,7 @@ in
 
 stdenv.mkDerivation rec {
   pname = "j-link";
-  version = "V752b";
+  version = "V752d";
 
   src = requireFile {
     name = "JLink_Linux_${version}_${architecture}.tgz";
