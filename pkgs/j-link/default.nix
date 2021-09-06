@@ -28,11 +28,14 @@ let
 
   architecture = architectures.${stdenv.hostPlatform.system};
 
+  version = "7.54";
+  archiveVersion = "V" + builtins.replaceStrings [ "." ] [ "" ] version;
+
   hashes = {
-    aarch64-linux = "sha256-qjLkC2j6lRYkhmvE/ZEp8jg+VMPQObtA6tTr6iL63KM=";
-    armv7l-linux  = "sha256-cuakzV3Vazn0ziUEbnJLxODcTOhL92lC7Zol/CvjRtY=";
-    i686-linux    = "sha256-p6RoleHkMzNhcFPHCQqf/vVSOWjXsGlyR6ly1qUAQ2M=";
-    x86_64-linux  = "sha256-tv3vdqbFUvFe7OTAZWa36N62CthX5M+9DEQcFyxVC+A=";
+    aarch64-linux = "sha256-D5EbOrAWRLIa7v/WFJr2gaVi2Quynobd9HW0nYTd6lI=";
+    armv7l-linux  = "sha256-GRKrgehUedw2RmKVbPy9jZkYCFEFyS0QtUpdjrVMO/k=";
+    i686-linux    = "sha256-xgcsIfuvGLA9GXA67q7rFli9BgA9OmBzfolW7z1Vwhs=";
+    x86_64-linux  = "sha256-5+UUmloAxmCUcXRoywKVOQAcCO0mPuK59DWMqMI6Wck=";
   };
 
   hash = hashes.${stdenv.hostPlatform.system};
@@ -117,10 +120,10 @@ in
 
 stdenv.mkDerivation rec {
   pname = "j-link";
-  version = "V752d";
+  inherit version;
 
   src = requireFile {
-    name = "JLink_Linux_${version}_${architecture}.tgz";
+    name = "JLink_Linux_${archiveVersion}_${architecture}.tgz";
     url = "https://www.segger.com/downloads/jlink#J-LinkSoftwareAndDocumentationPack";
     sha256 = hash;
   };
