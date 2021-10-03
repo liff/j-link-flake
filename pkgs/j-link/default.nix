@@ -28,14 +28,14 @@ let
 
   architecture = architectures.${stdenv.hostPlatform.system};
 
-  version = "7.54c";
+  version = "7.54d";
   archiveVersion = "V" + builtins.replaceStrings [ "." ] [ "" ] version;
 
   hashes = {
-    aarch64-linux = "sha256-gZCRsAKkbMokt8tDobL2sKu+UQ8EmhG1w9mptOJGuhQ=";
-    armv7l-linux  = "sha256-54YeA8dCtDMkYnP23DnpklDNJyec9kcTQ0wxiliXkuU=";
-    i686-linux    = "sha256-w4MhZ8lLQdsVX4yG9vRwU5M7ZT7tiDu3fFfCKO5P3BE=";
-    x86_64-linux  = "sha256-LDphnc1sFxCZMMrHSEGI/DMxJJY4g+3Ltr1151K0qN8=";
+    aarch64-linux = "sha256-KyCVRLlNMRstxfJSlEdRqdr8aEDIEQvVK0knY7MRzFw=";
+    armv7l-linux  = "sha256-/F2mvOWod7maI+m6xHcTDd/MlNls3I3kmdD1bCYBfXM=";
+    i686-linux    = "sha256-Xy9luxZCwhWh5J7vvOp2sj2yiKe7wyxeyfeZbvBGlEU=";
+    x86_64-linux  = "sha256-IPLF/v92MSW1h26oft7+PDZc047EKmwJ+hsjX72LCZo=";
   };
 
   hash = hashes.${stdenv.hostPlatform.system};
