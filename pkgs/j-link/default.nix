@@ -19,26 +19,12 @@
 , libXrandr }:
 
 let
-  archiveArchitectures = {
-    aarch64-linux = "arm64";
-    armv7l-linux  = "arm";
-    i686-linux    = "i386";
-    x86_64-linux  = "x86_64";
-  };
+  seggerPackages = import ../../data/packages.nix;
+  inherit (seggerPackages) version systems;
 
-  archiveArchitecture = archiveArchitectures.${stdenv.hostPlatform.system};
-
-  version = "7.54d";
-  archiveVersion = "V" + builtins.replaceStrings [ "." ] [ "" ] version;
-
-  hashes = {
-    aarch64-linux = "sha256-KyCVRLlNMRstxfJSlEdRqdr8aEDIEQvVK0knY7MRzFw=";
-    armv7l-linux  = "sha256-/F2mvOWod7maI+m6xHcTDd/MlNls3I3kmdD1bCYBfXM=";
-    i686-linux    = "sha256-Xy9luxZCwhWh5J7vvOp2sj2yiKe7wyxeyfeZbvBGlEU=";
-    x86_64-linux  = "sha256-IPLF/v92MSW1h26oft7+PDZc047EKmwJ+hsjX72LCZo=";
-  };
-
-  hash = hashes.${stdenv.hostPlatform.system};
+  hash = systems.${stdenv.hostPlatform.system}.hash;
+  url = systems.${stdenv.hostPlatform.system}.url;
+  archiveFilename = systems.${stdenv.hostPlatform.system}.filename;
 
   desktopItems = [
     (makeDesktopItem {
@@ -123,7 +109,7 @@ stdenv.mkDerivation rec {
   inherit version;
 
   src = requireFile {
-    name = "JLink_Linux_${archiveVersion}_${archiveArchitecture}.tgz";
+    name = archiveFilename;
     url = "https://www.segger.com/downloads/jlink#J-LinkSoftwareAndDocumentationPack";
     sha256 = hash;
   };

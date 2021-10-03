@@ -1,0 +1,91 @@
+#!/usr/bin/env nix-shell
+#!nix-shell -i python3 -p "python3.withPackages(ps: [ ps.beautifulsoup4 ps.requests ps.werkzeug ])"
+from __future__ import annotations
+
+import json
+import os.path
+import re
+import subprocess
+from os.path import basename
+from tempfile import gettempdir
+from urllib.parse import urlparse
+from json.decoder import JSONDecodeError
+import requests
+from bs4 import BeautifulSoup
+from werkzeug.http import parse_options_header
+
+PACKAGES_FILE = "./data/packages.json"
+
+SEGGER_ARCHS = {
+    "x86_64-linux": "x86_64",
+    "i686-linux": "i386",
+    "aarch64-linux": "arm64",
+    "armv7l-linux": "arm",
+}
+
+SYSTEMS = SEGGER_ARCHS.keys()
+
+RELEASE_NOTES = "https://www.segger.com/downloads/jlink/ReleaseNotes_JLink.html"
+
+VERSION_RX = re.compile("Version V([0-9a-z.]+) \([0-9-]+\)")
+
+
+def tgz_download_url(system: str, version: str):
+    archive_version = version.replace(".", "")
+    return f"https://www.segger.com/downloads/jlink/JLink_Linux_V{archive_version}_{SEGGER_ARCHS[system]}.tgz"
+
+
+def scrape_latest_version(url, pattern):
+    response = requests.get(url)
+    response.raise_for_status()
+    html = BeautifulSoup(response.text, "html.parser")
+    if (version_text := html.find(string=pattern)) and (m := pattern.match(version_text)):
+        return m.group(1)
+    else:
+        raise RuntimeError(f"Could not find version text from {url}")
+
+
+def download_archive(url):
+    filename_from_url = basename(urlparse(url).path)
+    with requests.post(url, data={"accept_license_agreement": "accepted"}, stream=True) as response:
+        response.raise_for_status()
+        _, options = parse_options_header(response.headers["content-disposition"])
+        filename = os.path.join(gettempdir(), basename(options["filename"] or filename_from_url))
+        with open(filename, "wb") as out:
+            for chunk in response.iter_content(chunk_size=1 * 1024 * 1024):
+                out.write(chunk)
+    return filename
+
+
+if __name__ == "__main__":
+    try:
+        with open(PACKAGES_FILE, "rb") as inp:
+            current_data = json.load(inp)
+    except (FileNotFoundError, JSONDecodeError):
+        current_data = dict(version="undefined", systems={system: {} for system in SYSTEMS})
+
+    latest_version = scrape_latest_version(RELEASE_NOTES, VERSION_RX)
+
+    if current_data["version"] == latest_version:
+        print(f"{item.name} up to date at {latest_version}.")
+    else:
+        print(f"Update from {current_data['version']} to {latest_version}…")
+        for system in SYSTEMS:
+            url = tgz_download_url(system, latest_version)
+            archive_file = download_archive(url)
+            proc = subprocess.run(
+                ["nix", "--quiet", "store", "prefetch-file", "--json", f"file://{archive_file}"], capture_output=True
+            )
+            proc.check_returncode()
+            result = json.loads(proc.stdout)
+            current_data["systems"][system]["url"] = url
+            current_data["systems"][system]["hash"] = result["hash"]
+            current_data["systems"][system]["filename"] = basename(archive_file)
+        current_data["version"] = latest_version
+
+    with open(PACKAGES_FILE, "w") as out:
+        json.dump(current_data, out, indent=4)
+
+# Local Variables:
+# mode: python
+# End:
