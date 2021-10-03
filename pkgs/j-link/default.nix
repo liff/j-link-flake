@@ -19,14 +19,14 @@
 , libXrandr }:
 
 let
-  architectures = {
+  archiveArchitectures = {
     aarch64-linux = "arm64";
     armv7l-linux  = "arm";
     i686-linux    = "i386";
     x86_64-linux  = "x86_64";
   };
 
-  architecture = architectures.${stdenv.hostPlatform.system};
+  archiveArchitecture = archiveArchitectures.${stdenv.hostPlatform.system};
 
   version = "7.54d";
   archiveVersion = "V" + builtins.replaceStrings [ "." ] [ "" ] version;
@@ -123,7 +123,7 @@ stdenv.mkDerivation rec {
   inherit version;
 
   src = requireFile {
-    name = "JLink_Linux_${archiveVersion}_${architecture}.tgz";
+    name = "JLink_Linux_${archiveVersion}_${archiveArchitecture}.tgz";
     url = "https://www.segger.com/downloads/jlink#J-LinkSoftwareAndDocumentationPack";
     sha256 = hash;
   };
