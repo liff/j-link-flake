@@ -67,7 +67,7 @@ if __name__ == "__main__":
     latest_version = scrape_latest_version(RELEASE_NOTES, VERSION_RX)
 
     if current_data["version"] == latest_version:
-        print(f"{item.name} up to date at {latest_version}.")
+        print(f"Up to date at {latest_version}.")
     else:
         print(f"Update from {current_data['version']} to {latest_version}…")
         for system in SYSTEMS:
