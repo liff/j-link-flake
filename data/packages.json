@@ -1,25 +1,25 @@
 {
-    "version": "7.56c",
+    "version": "7.56d",
     "systems": {
         "x86_64-linux": {
-            "url": "https://www.segger.com/downloads/jlink/JLink_Linux_V756c_x86_64.tgz",
-            "hash": "sha256-DZZgb4Nufiv28UfrcYPGOQZAP8MjPcDs2jDpTTgUnJo=",
-            "filename": "JLink_Linux_V756c_x86_64.tgz"
+            "url": "https://www.segger.com/downloads/jlink/JLink_Linux_V756d_x86_64.tgz",
+            "hash": "sha256-ITfPntBv4rfa3Cc3+f6KZ6Iy5RgSRRo6MifLor1dxTA=",
+            "filename": "JLink_Linux_V756d_x86_64.tgz"
         },
         "i686-linux": {
-            "url": "https://www.segger.com/downloads/jlink/JLink_Linux_V756c_i386.tgz",
-            "hash": "sha256-dp4YeDhrScvbSnZ4j0FQghSVsgP4GUhOQXpO0pP8+Xk=",
-            "filename": "JLink_Linux_V756c_i386.tgz"
+            "url": "https://www.segger.com/downloads/jlink/JLink_Linux_V756d_i386.tgz",
+            "hash": "sha256-USBDWXOwXfw3jcOwjp2QcGx+6fkFJ4WBI5ykyQVqgq0=",
+            "filename": "JLink_Linux_V756d_i386.tgz"
         },
         "aarch64-linux": {
-            "url": "https://www.segger.com/downloads/jlink/JLink_Linux_V756c_arm64.tgz",
-            "hash": "sha256-Ij4/vWNugfSKOuw433nj318sZRORVZD47dXDfNRVKDM=",
-            "filename": "JLink_Linux_V756c_arm64.tgz"
+            "url": "https://www.segger.com/downloads/jlink/JLink_Linux_V756d_arm64.tgz",
+            "hash": "sha256-GgVhdtnW5JEeKo6Rip5TtdLz8zrnOGzQ69BmCJCspIM=",
+            "filename": "JLink_Linux_V756d_arm64.tgz"
         },
         "armv7l-linux": {
-            "url": "https://www.segger.com/downloads/jlink/JLink_Linux_V756c_arm.tgz",
-            "hash": "sha256-JMrd966kfLY23nxhYQQQfj/9wnRMPYGuqdImYkvBmW8=",
-            "filename": "JLink_Linux_V756c_arm.tgz"
+            "url": "https://www.segger.com/downloads/jlink/JLink_Linux_V756d_arm.tgz",
+            "hash": "sha256-m9Gw8Jr2y4I668QzbFVEQJ0fPx3W0g1Sx4MZSptiWUU=",
+            "filename": "JLink_Linux_V756d_arm.tgz"
         }
     }
 }
