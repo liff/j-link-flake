@@ -1,4 +1,7 @@
-A Nix [flake](https://nixos.wiki/wiki/Flakes) for [SEGGER J-Link](https://www.segger.com/downloads/jlink/).
+A Nix [flake](https://nixos.wiki/wiki/Flakes) for
+[SEGGER J-Link](https://www.segger.com/downloads/jlink/).
+
+The package version is automatically updated daily.
 
 # Usage
 
