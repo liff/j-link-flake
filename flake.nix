@@ -11,6 +11,7 @@
         j-link = (import nixpkgs {
           inherit system;
           overlays = [ self.overlay ];
+          config.allowUnfree = true;
         }).j-link;
       });
 
