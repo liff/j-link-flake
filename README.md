@@ -11,7 +11,7 @@ permissions.
 
 ```nix
 {
-  j-link.url = "github:liff/j-link-flake";
+  inputs.j-link.url = "github:liff/j-link-flake";
 
   outputs = { self, nixpkgs, j-link }: {
     # replace 'joes-desktop' with your hostname here.
