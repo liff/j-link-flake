@@ -7,18 +7,22 @@
 
       systems = [ "i686-linux" "x86_64-linux" "armv7l-linux" "aarch64-linux" ];
 
-      packages = genAttrs systems (system: {
-        j-link = (import nixpkgs {
-          inherit system;
-          overlays = [ self.overlay ];
-          config.allowUnfree = true;
-        }).j-link;
-      });
+      packages = genAttrs systems (system:
+        let j-link = (import nixpkgs {
+                  inherit system;
+                  overlays = [ self.overlays.default ];
+                  config.allowUnfree = true;
+                }).j-link;
+        in { inherit j-link; default = j-link; });
+
+      overlay = final: prev: {
+        j-link = final.callPackage ./pkgs/j-link {};
+      };
 
     in {
-      inherit packages;
+      inherit packages overlay;
 
-      defaultPackage = genAttrs systems (system: packages."${system}".j-link);
+      overlays.default = overlay;
 
       apps =
         genAttrs systems (system:
@@ -41,12 +45,8 @@
             j-mem = mkApp "JMemExe";
           });
 
-      overlay = final: prev: {
-        j-link = final.callPackage ./pkgs/j-link {};
-      };
-
       nixosModule = { pkgs, ... }: {
-        nixpkgs.overlays = [ self.overlay ];
+        nixpkgs.overlays = [ self.overlays.default ];
         services.udev.packages = [ pkgs.j-link ];
         environment.systemPackages = [ pkgs.j-link ];
       };
