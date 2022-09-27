@@ -7,7 +7,6 @@
 , copyDesktopItems
 , fontconfig
 , freetype
-, libusb
 , libICE
 , libSM
 , udev
