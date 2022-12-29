@@ -19,8 +19,16 @@
         j-link = final.callPackage ./pkgs/j-link {};
       };
 
+      nixosModule = { pkgs, ... }: {
+        nixpkgs.overlays = [ self.overlays.default ];
+        services.udev.packages = [ pkgs.j-link ];
+        environment.systemPackages = [ pkgs.j-link ];
+      };
+
     in {
-      inherit packages overlay;
+      inherit packages overlay nixosModule;
+
+      nixosModules.default = nixosModule;
 
       overlays.default = overlay;
 
@@ -45,10 +53,5 @@
             j-mem = mkApp "JMemExe";
           });
 
-      nixosModule = { pkgs, ... }: {
-        nixpkgs.overlays = [ self.overlays.default ];
-        services.udev.packages = [ pkgs.j-link ];
-        environment.systemPackages = [ pkgs.j-link ];
-      };
     };
 }
