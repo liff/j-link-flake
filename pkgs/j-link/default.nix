@@ -9,6 +9,7 @@
 , freetype
 , libICE
 , libSM
+, icu
 , udev
 , libX11
 , libXext
@@ -121,12 +122,12 @@ stdenv.mkDerivation rec {
   nativeBuildInputs = [ copyDesktopItems autoPatchelfHook makeWrapper ];
 
   buildInputs = [
-    udev stdenv.cc.cc.lib
+    icu udev stdenv.cc.cc.lib
     fontconfig freetype libICE libSM
     libX11 libXext libXcursor libXfixes libXrender libXrandr
   ];
 
-  runtimeDependencies = [ udev ];
+  runtimeDependencies = [ icu udev ];
 
   inherit desktopItems;
 
