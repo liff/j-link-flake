@@ -134,27 +134,31 @@ stdenv.mkDerivation rec {
   installPhase = ''
     runHook preInstall
 
-    mkdir -p "$out/lib/JLink" "$out/share/doc" "$out/bin"
+    mkdir -p $out/lib/JLink $out/share/doc $out/bin
 
-    cp -R * "$out/lib/JLink"
-    rm "$out/lib/JLink/99-jlink.rules"
+    install --directory $out/lib/udev/rules.d
+    mv 99-jlink.rules $out/lib/udev/rules.d/
 
-    for f in "$out/lib/JLink"/J*; do
-        if [[ -L $f ]]; then
-            mv "$f" "$out/bin/"
-        elif [[ -x $f ]]; then
-            makeWrapper "$f" "$out/bin/$(basename "$f")"
+    mv * $out/lib/JLink
+
+    for f in $out/lib/JLink/*; do
+        name=$(basename $f)
+        if [[ ! $name =~ ^lib ]]; then
+            if [[ -L $f ]]; then
+                mv $f $out/bin/
+            elif [[ -f $f && -x $f ]]; then
+                makeWrapper $f $out/bin/$name
+            fi
         fi
     done
 
-    mv "$out/lib/JLink/Doc" "$out/share/doc/JLink"
+    mv $out/lib/JLink/Doc $out/share/doc/JLink
     mv \
-        "$out/lib/JLink"/README* \
-        "$out/lib/JLink/Samples" \
-        "$out/lib/JLink/GDBServer"/Readme* \
-        "$out/share/doc/JLink/"
+        $out/lib/JLink/README* \
+        $out/lib/JLink/Samples \
+        $out/lib/JLink/GDBServer/Readme* \
+        $out/share/doc/JLink/
 
-    install -D -t "$out/lib/udev/rules.d" 99-jlink.rules
 
     runHook postInstall
   '';
