@@ -27,7 +27,7 @@ SYSTEMS = SEGGER_ARCHS.keys()
 
 RELEASE_NOTES = "https://www.segger.com/downloads/jlink/ReleaseNotes_JLink.html"
 
-VERSION_RX = re.compile("Version V([0-9a-z.]+) \([0-9-]+\)")
+VERSION_RX = re.compile("Version V([0-9a-z.]+) \\([0-9-]+\\)")
 
 
 def tgz_download_url(system: str, version: str):
@@ -49,11 +49,12 @@ def download_archive(url):
     filename_from_url = basename(urlparse(url).path)
     with requests.post(url, data={"accept_license_agreement": "accepted"}, stream=True) as response:
         response.raise_for_status()
-        _, options = parse_options_header(response.headers["content-disposition"])
-        filename = os.path.join(gettempdir(), basename(options["filename"] or filename_from_url))
+        options = {}
+        if content_disposition := response.headers.get("content-disposition"):
+            _, options = parse_options_header(content_disposition)
+        filename = os.path.join(gettempdir(), basename(options.get("filename") or filename_from_url))
         with open(filename, "wb") as out:
-            for chunk in response.iter_content(chunk_size=1 * 1024 * 1024):
-                out.write(chunk)
+            out.writelines(response.iter_content(chunk_size=1 * 1024 * 1024))
     return filename
 
 
